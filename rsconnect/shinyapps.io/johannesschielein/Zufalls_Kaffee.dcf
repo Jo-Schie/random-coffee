@@ -1,0 +1,12 @@
+name: Zufalls_Kaffee
+title: Zufalls_Kaffee
+username:
+account: johannesschielein
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 3072186
+bundleId: 3899141
+url: https://johannesschielein.shinyapps.io/Zufalls_Kaffee/
+when: 1606213760.94291
+asMultiple: FALSE
+asStatic: FALSE
