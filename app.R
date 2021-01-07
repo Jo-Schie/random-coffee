@@ -44,7 +44,8 @@ ui <- fluidPage(
                         "Wer nimmt teil?",
                         df.secret.santa$participants,multiple = T,
                         selected=df.secret.santa$participants),
-            #textInput("caption", "Neuer Teilnehmer", ""),
+            textInput("caption", "Neuer Teilnehmer", ""),
+            actionButton("add", "Add"),
             "Keine Lust auf Kaffee alleine? Drück den Button!",
             actionButton("go", "Go"),
             img(src="gato.gif",width=250,height=181)
@@ -59,11 +60,22 @@ ui <- fluidPage(
 )
 
 # Define server logic required to draw a histogram
-server <- function(input, output) {
+server <- function(input, output, session) {
     # observe user inputs
+    
+    react <- reactive(input$add, {
+        df.secret.santa <- reactiveValues(d = df.secret.santa)
+    })
+    
+    observeEvent(input$add,{
+        temp <- data.frame(participants = input$caption, secret_friends = NA)
+        df.secret.santa$d <- rbind(df.secret.santa$d, temp)
+        df.secret.santa <- as.data.frame(df.secret.santa$d)
+        input$inputnamen = renderUI(selectInput("inputnamen", "Wer nimmt teil?",df.secret.santa$participants,multiple = T,
+                                                selected=df.secret.santa$participants ))
+    })
     inputnamendynamic <- reactive({
         input$inputnamen
-
     })
     # random table creation. 
     randomVals <- eventReactive(input$go, {
