@@ -22,6 +22,7 @@ df.secret.santa<-data.frame(participants=c(
     "Johannes",
     "Jota",
     "Lennart",
+    "Luciane",
     "Luis",
     # "Inga",
     #"Lotte",
