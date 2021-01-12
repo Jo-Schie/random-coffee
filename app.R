@@ -7,29 +7,32 @@
 #    http://shiny.rstudio.com/
 #
 library(shiny)
-df.secret.santa<-data.frame(participants=c("Heike",
-                                           "Anja B.",
-                                           "Beate",
-                                           "Franzi",
-                                           "Nicola",
-                                           "Jochen",
-                                           "Doro",
-                                           #"Tatjana",
-                                           "Jörg",
-                                           #"Vanessa",
-                                           "Alex",
-                                           "Vivien",
-                                           "Lennart",
-                                           "Anna Victoria",
-                                           "Johannes",
-                                           #"Christian",
-                                           "Daniela",
-                                           "Dilara",
-                                           "Anja S.",
-                                           "Luis",
-                                           "Lotte",
-                                           "Philip"),
-                            secret_friends=NA)
+df.secret.santa<-data.frame(participants=c(
+    "Anna Victoria",
+    "Alex",
+    "Anja B.",
+    "Anja S.",
+    "Beate",
+    "Daniela",
+    "Dilara",
+    "Franzi",
+    "Heike",
+    "Jochen",
+    "Jörg",
+    "Johannes",
+    "Jota",
+    "Lennart",
+    "Luis",
+    # "Inga",
+    #"Lotte",
+    "Nicola",
+    "Doro",
+    #"Tatjana",
+    #"Vanessa",
+    "Philip",
+    "Vivien"
+    ),
+    secret_friends = NA)
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
