@@ -7,6 +7,8 @@
 #    http://shiny.rstudio.com/
 #
 library(shiny)
+library(dplyr)
+library(DT)
 df.secret.santa<-data.frame(participants=c("Heike",
                                            "Anja B.",
                                            "Beate",
@@ -60,23 +62,32 @@ ui <- fluidPage(
 )
 
 # Define server logic required to draw a histogram
+
 server <- function(input, output, session) {
     # observe user inputs
     
-    react <- reactive(input$add, {
-        df.secret.santa <- reactiveValues(d = df.secret.santa)
-    })
-    
-    observeEvent(input$add,{
-        temp <- data.frame(participants = input$caption, secret_friends = NA)
-        df.secret.santa$d <- rbind(df.secret.santa$d, temp)
-        df.secret.santa <- as.data.frame(df.secret.santa$d)
-        input$inputnamen = renderUI(selectInput("inputnamen", "Wer nimmt teil?",df.secret.santa$participants,multiple = T,
-                                                selected=df.secret.santa$participants ))
-    })
+    # add a new name to the input list of "inputnamen". So far only works with one
+    # additional name
+    observeEvent(
+        input$add,{
+            if(input$caption %in% df.secret.santa){
+
+            }
+            else{
+                df.secret.santa_new <- df.secret.santa %>%
+                    add_row (participants = input$caption, secret_friends = NA)
+                updateSelectInput(session, "inputnamen", label = "Wer nimmt teil?",
+                                  choices  = df.secret.santa_new$participants,
+                                  selected = df.secret.santa_new$participants)
+            }
+            df.secret.santa <- df.secret.santa_new
+        })
+
+
     inputnamendynamic <- reactive({
         input$inputnamen
     })
+    
     # random table creation. 
     randomVals <- eventReactive(input$go, {
         # check if number of participants is odd or even
