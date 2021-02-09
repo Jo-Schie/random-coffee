@@ -7,87 +7,77 @@
 #    http://shiny.rstudio.com/
 #
 library(shiny)
-df.secret.santa<-data.frame(participants=c(
-    "Anna Victoria",
-    "Alex",
-    "Anja B.",
-    "Anja S.",
-    "Beate",
-    "Daniela",
-    "Dilara",
-    "Franzi",
-    "Heike",
-    "Jochen",
-    "Jörg",
-    "Johannes",
-    "Jota",
-    "Lennart",
-    "Luciane",
-    "Luis",
-    # "Inga",
-    #"Lotte",
-    "Nicola",
-    "Doro",
-    #"Tatjana",
-    #"Vanessa",
-    "Philip",
-    "Vivien"
-    ),
-    secret_friends = NA)
+library(dplyr)
+library(DT)
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
-
     # Application title
-    titlePanel("Zufalls-Kaffee-Generator"),
-
-    # Sidebar with a slider input for number of bins 
+    titlePanel("Remote-Arbeiten-Zufalls-Kaffeeklatsch-Generator (RAZKG)"),
+    # Sidebar
     sidebarLayout(
         sidebarPanel(
-            selectInput("inputnamen",
-                        "Wer nimmt teil?",
-                        df.secret.santa$participants,multiple = T,
-                        selected=df.secret.santa$participants),
-            #textInput("caption", "Neuer Teilnehmer", ""),
+            # pre-defined inputs list
+            selectizeInput(
+                "vec1", "Geben Sie die Namen ein", 
+                choices = NULL, 
+                multiple = TRUE,
+                options = list(create = TRUE)
+            ),
+            # Text
             "Keine Lust auf Kaffee alleine? Drück den Button!",
+            # Button for creating the table
             actionButton("go", "Go"),
-            img(src="gato.gif",width=250,height=181)
+            # image
+            img(src = "gato.gif",
+                width = 250,
+                height = 181)
         ),
+        # Table output to the side
+        mainPanel(textOutput("textwoche"),
+                  tableOutput("zufallsteilnehmer"))
+    ))
 
-        # Show a plot of the generated distribution
-        mainPanel(
-            textOutput("textwoche"),
-           tableOutput("zufallsteilnehmer")
-        )
-    )
-)
 
-# Define server logic required to draw a histogram
-server <- function(input, output) {
+server <- function(input, 
+                   output, 
+                   session) {
     # observe user inputs
+    
     inputnamendynamic <- reactive({
-        input$inputnamen
-
+        input$vec1
     })
-    # random table creation. 
+    
+    # random table creation.
     randomVals <- eventReactive(input$go, {
         # check if number of participants is odd or even
-        mylength<-length(inputnamendynamic())/2
-        mylength<-ifelse(length(inputnamendynamic()) %% 2 == 0# is nr even?
-                         ,mylength,mylength+1)
+        mylength <- length(inputnamendynamic()) / 2
+        mylength <-
+            ifelse(length(inputnamendynamic()) %% 2 == 0,
+                   mylength,
+                   mylength + 1)
+        # print an error message for an even number of participants
+        if(!length(inputnamendynamic()) %% 2 == 0){
+            showNotification(paste("Aufgrund einer ungeraden Teilnehmerzahl führt der/die letzte heute leider ein Selbstgespräch, es sei denn, es lädt jemand spontan mit ein?"),
+                             type="warning",duration = 120)}
         # create table with paticipants
-        df.secret.santa.dynamic<-t(as.data.frame(split(
+        df.secret.santa.dynamic <- t(as.data.frame(split(
             sample(inputnamendynamic()),
-            rep(1:mylength,each=2))
-            ))
-        colnames(df.secret.santa.dynamic)<-c("Wer meldet sich?","Bei wem?")
+            rep(1:mylength, each = 2)
+        )))
+        colnames(df.secret.santa.dynamic) <-
+            c("Wer meldet sich?", "Bei wem?")
         df.secret.santa.dynamic
     })
-    output$zufallsteilnehmer <- renderTable({randomVals()
+    
+    output$zufallsteilnehmer <- renderTable({
+        randomVals()
     })
-    output$textwoche <- renderText({paste("Und los gehts!")
+    
+    output$textwoche <- renderText({
+        paste("Und los gehts!")
     })
-
+    
     
     
     
